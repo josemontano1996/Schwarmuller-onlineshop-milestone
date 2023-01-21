@@ -1,0 +1,7 @@
+* {
+  box-sizing: border-box; /* border-box is a non inheritable property, that is why we select everything with * */
+}
+
+html {
+  font-family: "Montserrat", "sans-serif";
+}
