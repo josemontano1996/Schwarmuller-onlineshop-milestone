@@ -1,12 +1,21 @@
 const User = require("../models/user.model");
 const authUtil = require("../util/authentication");
 const validation = require("../util/validation");
+const sessionFlash = require("../util/session-flash");
 
 function getSignUp(req, res) {
   res.render("customer/auth/signup");
 }
 
 async function postSignUp(req, res, next) {
+  const enteredData = {
+    email: req.body.email,
+    password: req.body.password,
+    fullname: req.body.fullname,
+    street: req.body.street,
+    postalcode: req.body.postal,
+    city: req.body.city,
+  };
   if (
     !validation.userDetailsAreValid(
       req.body.email,
@@ -18,7 +27,17 @@ async function postSignUp(req, res, next) {
     ) ||
     !validation.emailIsConfirmed(req.body.email, req.body["confirm-email"])
   ) {
-    res.redirect("/signup");
+    sessionFlash.flahsDataToSession(
+      req,
+      {
+        errorMessage: "Please check your input, invalid data",
+        ...enteredData,
+      },
+      function () {
+        res.redirect("/signup");
+      }
+    );
+
     return;
   }
 
@@ -35,7 +54,17 @@ async function postSignUp(req, res, next) {
     const emailExistsAlready = await user.emailExistsAlready();
 
     if (emailExistsAlready) {
-      res.redirect("/signup");
+      sessionFlash.flahsDataToSession(
+        req,
+        {
+          errorMessage: "User exists already",
+          ...enteredData,
+        },
+        function () {
+          res.redirect("/signup");
+        }
+      );
+
       return;
     }
 
@@ -59,10 +88,17 @@ async function login(req, res, next) {
   } catch (error) {
     return next(error);
   }
-  //if the user doesnt exist, return and dont execute more code
+
   if (!existingUser) {
-    console.log("User not found");
-    res.redirect("/login");
+    const sessionErrorData = {
+      errorMessage: "Invalid credentials, please check email or password",
+      email: user.email,
+      password: user.password,
+    };
+
+    sessionFlash.flahsDataToSession(req, sessionErrorData, function () {
+      res.redirect("/login");
+    });
     return;
   }
 
@@ -72,9 +108,10 @@ async function login(req, res, next) {
   );
 
   if (!passwordIsCorrect) {
-    console.log("Password incorrect");
-    res.redirect("/login");
-    return;
+    sessionFlash.flahsDataToSession(req, sessionErrorData, function () {
+      res.redirect("/login");
+      return;
+    });
   }
 
   authUtil.createUserSession(req, existingUser, function () {
