@@ -7,7 +7,7 @@
   <%- include("../../shared/includes/header") %>
   <main>
     <h1>Log in</h1>
-    <form action="/login" method="GET">
+    <form action="/login" method="POST">
         <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
       <p>
         <label for="email">E-mail</label>
