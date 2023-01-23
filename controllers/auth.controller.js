@@ -106,19 +106,20 @@ function getLogin(req, res) {
 async function login(req, res, next) {
   const user = new User(req.body.email, req.body.password);
   let existingUser;
+
   try {
     existingUser = await user.getUserwithSameEmail();
   } catch (error) {
     return next(error);
   }
 
-  if (!existingUser) {
-    const sessionErrorData = {
-      errorMessage: "Invalid credentials, please check email or password",
-      email: user.email,
-      password: user.password,
-    };
+  const sessionErrorData = {
+    errorMessage: "Invalid credentials, please check email or password",
+    email: user.email,
+    password: user.password,
+  };
 
+  if (!existingUser) {
     sessionFlash.flahsDataToSession(req, sessionErrorData, function () {
       res.redirect("/login");
     });
@@ -133,8 +134,8 @@ async function login(req, res, next) {
   if (!passwordIsCorrect) {
     sessionFlash.flahsDataToSession(req, sessionErrorData, function () {
       res.redirect("/login");
-      return;
     });
+    return;
   }
 
   authUtil.createUserSession(req, existingUser, function () {
