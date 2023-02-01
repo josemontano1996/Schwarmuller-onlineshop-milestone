@@ -28,14 +28,14 @@ class Product {
       .getDb()
       .collection("products")
       .findOne({ _id: prodId });
-    
+
     if (!product) {
       const error = new Error("Could not find product with provided Id");
       error.code = 404;
       throw error;
     }
 
-    return product;
+    return new Product(product);
   }
 
   static async findAll() {
@@ -53,7 +53,29 @@ class Product {
       description: this.description,
       image: this.image,
     };
-    await db.getDb().collection("products").insertOne(productData);
+
+    if (this.id) {
+      //updating a photo if the product alreay existed
+      const productId = new mongodb.ObjectId(this.id);
+
+      if (!this.image) {
+        // if there is no image in the request que delete the productData.image,
+        // para que no sobreescriba la imagen con un valor indefinido
+        delete productData.image;
+      }
+      await db
+        .getDb()
+        .collection("products")
+        .updateOne({ _id: productId }, { $set: productData });
+    } else {
+      await db.getDb().collection("products").insertOne(productData);
+    }
+  }
+
+  replaceImage(newImage) {
+    this.image = newImage;
+    this.imagePath = `product-data/images/${productData.image}`;
+    this.imageUrl = `/products/assets/images/${productData.image}`;
   }
 }
 

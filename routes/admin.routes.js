@@ -17,6 +17,10 @@ router.post(
 
 router.get("/products/:id", adminController.getUpdateProduct);
 
-router.post("/products/:id", adminController.updateProduct);
+router.post(
+  "/products/:id",
+  imageUploadMiddlware,
+  adminController.updateProduct
+);
 
 module.exports = router;
