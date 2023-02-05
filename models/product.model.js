@@ -74,8 +74,13 @@ class Product {
 
   replaceImage(newImage) {
     this.image = newImage;
-    this.imagePath = `product-data/images/${productData.image}`;
-    this.imageUrl = `/products/assets/images/${productData.image}`;
+    this.imagePath = `product-data/images/${this.image}`;
+    this.imageUrl = `/products/assets/images/${this.image}`;
+  }
+
+  remove() {
+    const productId = new mongodb.ObjectId(this.id);
+    return db.getDb().collection("products").deleteOne({ _id: productId });
   }
 }
 
