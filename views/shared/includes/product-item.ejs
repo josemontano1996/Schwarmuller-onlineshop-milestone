@@ -3,6 +3,7 @@
   <div class="product-item-content">
     <h2><%= product.title %></h2>
     <div class="product-item-actions">
+      <% if (locals.isAdmin){ %>
       <a class="btn btn-alt" href="/admin/products/<%= product.id %>"
         >View & Edit</a
       >
@@ -13,6 +14,10 @@
       >
         Delete
       </button>
+
+      <% } else { %>
+      <a class="btn btn-alt" href="/products/<%= product.id %>">View details</a>
+      <% } %>
     </div>
   </div>
 </article>
