@@ -2,7 +2,7 @@
   <% if(!locals.isAdmin) { %>
   <li><a href="/">Shop</a></li>
   <li href="/cart">
-    <a>Cart <span class="badge"><%= locals.cart.totalQuantity %></span></a>
+    <a href="/cart">Cart <span class="badge"><%= locals.cart.totalQuantity %></span></a>
   </li>
   <% } %> <% if(!locals.isAuth) { %>
   <li><a href="/signup">Signup</a></li>
