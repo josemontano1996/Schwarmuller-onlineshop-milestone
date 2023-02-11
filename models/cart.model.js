@@ -16,9 +16,9 @@ class Cart {
       //this.items.length es el tamano del array
       const item = this.items[i];
       if (item.product.id === product.id) {
-        cartItem.quantity++;
+        cartItem.quantity = cartItem.quantity + 1;
         cartItem.totalPrice = cartItem.totalPrice + product.price;
-        this.items[i] = cartItem;
+        this.items[i] = cartItem; //updating the item in the cart with the new cart item
 
         this.totalQuantity++;
         this.totalPrice += product.price;

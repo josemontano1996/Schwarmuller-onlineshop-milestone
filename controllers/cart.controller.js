@@ -3,7 +3,7 @@ const Product = require("../models/product.model");
 async function addCartItem(req, res, next) {
   let product;
   try {
-    product = await Product.findeById(req.body.productId);
+    product = await Product.findById(req.body.productId);
   } catch (error) {
     next(error);
     return;

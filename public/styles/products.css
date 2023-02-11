@@ -67,7 +67,6 @@
   #product-details img {
     width: 20rem;
     height: 15rem;
-    transform: rotateZ(-10deg);
     margin: var(--space-8);
   }
 

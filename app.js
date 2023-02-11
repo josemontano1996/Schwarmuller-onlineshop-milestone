@@ -20,6 +20,7 @@ const authRoutes = require("./routes/auth.routes");
 const productRoutes = require("./routes/products.routes");
 const baseRoutes = require("./routes/base.routes");
 const adminRoutes = require("./routes/admin.routes");
+const cartRoutes = require("./routes/cart.routes");
 
 const app = express();
 
@@ -29,19 +30,25 @@ app.set("views", path.join(__dirname, "views")); //constructing an absolute path
 app.use(express.static("public"));
 app.use("/products/assets", express.static("product-data"));
 app.use(express.urlencoded({ extended: false })); //extended:false is for handling just regular form submissions
+app.use(express.json()); //to extract information from json formatted forms fe our add to cart ajax request
 
 const sessionConfig = createSessionConfig();
 
 app.use(expressSession(sessionConfig));
 app.use(csrf());
+
 app.use(cartMiddleware);
 
 app.use(addCsrfTokenMiddleware);
 app.use(checkAuthStatusMiddleware);
 
+//Unprotected routes
 app.use(baseRoutes);
 app.use(authRoutes);
 app.use(productRoutes);
+app.use("/cart", cartRoutes);
+
+//Protected routes
 app.use(routeProtectionMiddleware);
 app.use("/admin", adminRoutes);
 
