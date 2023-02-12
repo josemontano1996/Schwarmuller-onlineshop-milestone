@@ -1,15 +1,15 @@
-const multer = require("multer");
-const uuid = require("uuid").v4;
+const multer = require('multer');
+const uuid = require('uuid').v4;
 
 const upload = multer({
   storage: multer.diskStorage({
-    destination: "product-data/images",
+    destination: 'product-data/images',
     filename: function (req, file, callback) {
-      callback(null, uuid() + "-" + file.originalname);
+      callback(null, uuid() + '-' + file.originalname);
     },
   }),
 });
 
-const configuredMulterMiddleware = upload.single("image");
+const configuredMulterMiddleware = upload.single('image');
 
 module.exports = configuredMulterMiddleware;

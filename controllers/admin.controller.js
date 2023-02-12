@@ -1,9 +1,9 @@
-const Product = require("../models/product.model");
+const Product = require('../models/product.model');
 
 async function getProducts(req, res, next) {
   try {
     const products = await Product.findAll();
-    res.render("admin/products/all-products", { products: products });
+    res.render('admin/products/all-products', { products: products });
   } catch (error) {
     next(error);
     return;
@@ -11,7 +11,7 @@ async function getProducts(req, res, next) {
 }
 
 function getNewProduct(req, res) {
-  res.render("admin/products/new-product");
+  res.render('admin/products/new-product');
 }
 
 async function createNewProduct(req, res, next) {
@@ -27,13 +27,13 @@ async function createNewProduct(req, res, next) {
     return;
   }
 
-  res.redirect("/admin/products");
+  res.redirect('/admin/products');
 }
 
 async function getUpdateProduct(req, res, next) {
   try {
     const product = await Product.findById(req.params.id); //req.params.id extrae el valor de :id que pusimos en la url
-    res.render("admin/products/update-product", { product: product });
+    res.render('admin/products/update-product', { product: product });
   } catch (error) {
     next(error);
   }
@@ -57,7 +57,7 @@ async function updateProduct(req, res, next) {
     return;
   }
 
-  res.redirect("/admin/products");
+  res.redirect('/admin/products');
 }
 
 async function deleteProduct(req, res, next) {
@@ -69,7 +69,7 @@ async function deleteProduct(req, res, next) {
     return next(error);
   }
 
-  res.json({ message: "Deleted product!" }); //570 min 18:20
+  res.json({ message: 'Deleted product!' }); //570 min 18:20
 }
 
 module.exports = {

@@ -1,5 +1,5 @@
 const deleteProductButtonElements = document.querySelectorAll(
-  ".product-item button"
+  '.product-item button'
 );
 
 async function deleteProduct(event) {
@@ -8,14 +8,14 @@ async function deleteProduct(event) {
   const csrfToken = buttonElement.dataset.csrf;
 
   const response = await fetch(
-    "/admin/products/" + productId + "?_csrf=" + csrfToken,
+    '/admin/products/' + productId + '?_csrf=' + csrfToken,
     {
-      method: "DELETE",
+      method: 'DELETE',
     }
   );
 
   if (!response.ok) {
-    alert("Something went wrong");
+    alert('Something went wrong');
     return;
   }
 
@@ -23,5 +23,5 @@ async function deleteProduct(event) {
 }
 
 for (const deleteProductButtonElement of deleteProductButtonElements) {
-  deleteProductButtonElement.addEventListener("click", deleteProduct);
+  deleteProductButtonElement.addEventListener('click', deleteProduct);
 }

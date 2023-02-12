@@ -1,6 +1,6 @@
-const mongodb = require("mongodb");
+const mongodb = require('mongodb');
 
-const db = require("../database/database");
+const db = require('../database/database');
 
 class Product {
   constructor(productData) {
@@ -26,11 +26,11 @@ class Product {
     }
     const product = await db
       .getDb()
-      .collection("products")
+      .collection('products')
       .findOne({ _id: prodId });
 
     if (!product) {
-      const error = new Error("Could not find product with provided Id");
+      const error = new Error('Could not find product with provided Id');
       error.code = 404;
       throw error;
     }
@@ -39,7 +39,7 @@ class Product {
   }
 
   static async findAll() {
-    const products = await db.getDb().collection("products").find().toArray();
+    const products = await db.getDb().collection('products').find().toArray();
     return products.map(function (productDocument) {
       return new Product(productDocument);
     });
@@ -65,10 +65,10 @@ class Product {
       }
       await db
         .getDb()
-        .collection("products")
+        .collection('products')
         .updateOne({ _id: productId }, { $set: productData });
     } else {
-      await db.getDb().collection("products").insertOne(productData);
+      await db.getDb().collection('products').insertOne(productData);
     }
   }
 
@@ -80,7 +80,7 @@ class Product {
 
   remove() {
     const productId = new mongodb.ObjectId(this.id);
-    return db.getDb().collection("products").deleteOne({ _id: productId });
+    return db.getDb().collection('products').deleteOne({ _id: productId });
   }
 }
 
