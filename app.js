@@ -6,7 +6,7 @@ const expressSession = require('express-session');
 
 //INTERNAL PACKAGES
 const createSessionConfig = require('./config/session');
-const db = require('./database/database');
+const db = require('./data/database');
 
 //MIDDLEWARES
 const addCsrfTokenMiddleware = require('./middlewares/csrf-token');

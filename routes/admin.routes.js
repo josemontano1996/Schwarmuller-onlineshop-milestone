@@ -1,17 +1,17 @@
 const express = require('express');
+
 const adminController = require('../controllers/admin.controller');
-const imageUploadMiddlware = require('../middlewares/image-upload');
+const imageUploadMiddleware = require('../middlewares/image-upload');
 
 const router = express.Router();
 
-//this routes will be searched when /admin is requested, we used a filtering option in app.js ln:41
-router.get('/products', adminController.getProducts);
+router.get('/products', adminController.getProducts); // /admin/products
 
 router.get('/products/new', adminController.getNewProduct);
 
 router.post(
   '/products',
-  imageUploadMiddlware,
+  imageUploadMiddleware,
   adminController.createNewProduct
 );
 
@@ -19,10 +19,14 @@ router.get('/products/:id', adminController.getUpdateProduct);
 
 router.post(
   '/products/:id',
-  imageUploadMiddlware,
+  imageUploadMiddleware,
   adminController.updateProduct
 );
 
 router.delete('/products/:id', adminController.deleteProduct);
+
+router.get('/orders', adminController.getOrders);
+
+router.patch('/orders/:id', adminController.updateOrder);
 
 module.exports = router;

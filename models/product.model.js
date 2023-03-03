@@ -1,6 +1,6 @@
 const mongodb = require('mongodb');
 
-const db = require('../database/database');
+const db = require('../data/database');
 
 class Product {
   constructor(productData) {
@@ -9,8 +9,7 @@ class Product {
     this.price = +productData.price;
     this.description = productData.description;
     this.image = productData.image; // the name of the image file
-    this.imagePath = `product-data/images/${productData.image}`;
-    this.imageUrl = `/products/assets/images/${productData.image}`;
+    this.updateImageData();
     if (productData._id) {
       this.id = productData._id.toString();
     }
@@ -30,7 +29,7 @@ class Product {
       .findOne({ _id: prodId });
 
     if (!product) {
-      const error = new Error('Could not find product with provided Id');
+      const error = new Error('Could not find product with provided id.');
       error.code = 404;
       throw error;
     }
@@ -40,9 +39,31 @@ class Product {
 
   static async findAll() {
     const products = await db.getDb().collection('products').find().toArray();
+
     return products.map(function (productDocument) {
       return new Product(productDocument);
     });
+  }
+
+  static async findMultiple(ids) {
+    const productIds = ids.map(function (id) {
+      return new mongodb.ObjectId(id);
+    });
+
+    const products = await db
+      .getDb()
+      .collection('products')
+      .find({ _id: { $in: productIds } })
+      .toArray();
+
+    return products.map(function (productDocument) {
+      return new Product(productDocument);
+    });
+  }
+
+  updateImageData() {
+    this.imagePath = `product-data/images/${this.image}`;
+    this.imageUrl = `/products/assets/images/${this.image}`;
   }
 
   async save() {
@@ -55,18 +76,18 @@ class Product {
     };
 
     if (this.id) {
-      //updating a photo if the product alreay existed
       const productId = new mongodb.ObjectId(this.id);
 
       if (!this.image) {
-        // if there is no image in the request que delete the productData.image,
-        // para que no sobreescriba la imagen con un valor indefinido
         delete productData.image;
       }
-      await db
-        .getDb()
-        .collection('products')
-        .updateOne({ _id: productId }, { $set: productData });
+
+      await db.getDb().collection('products').updateOne(
+        { _id: productId },
+        {
+          $set: productData,
+        }
+      );
     } else {
       await db.getDb().collection('products').insertOne(productData);
     }
@@ -74,8 +95,7 @@ class Product {
 
   replaceImage(newImage) {
     this.image = newImage;
-    this.imagePath = `product-data/images/${this.image}`;
-    this.imageUrl = `/products/assets/images/${this.image}`;
+    this.updateImageData();
   }
 
   remove() {

@@ -1,12 +1,18 @@
 const Order = require('../models/order.model');
 const User = require('../models/user.model');
 
-function getOrders(req, res) {
-  res.render('customer/orders/all-orders');
+async function getOrders(req, res) {
+  try {
+    const orders = await Order.findAllForUser(res.locals.uid);
+    res.render('customer/orders/all-orders', {
+      orders: orders,
+    });
+  } catch (error) {
+    next(error);
+  }
 }
 
 async function addOrder(req, res, next) {
-  const cart = res.locals.cart;
   let userDocument;
   try {
     userDocument = await User.findById(res.locals.uid);
@@ -19,8 +25,11 @@ async function addOrder(req, res, next) {
   try {
     await order.save();
   } catch (error) {
-    return next(error);
+    next(error);
+    return;
   }
+
+  req.session.cart = null;
 
   res.redirect('/orders');
 }

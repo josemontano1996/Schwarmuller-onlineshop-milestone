@@ -1,4 +1,5 @@
 const Product = require('../models/product.model');
+const Order = require('../models/order.model');
 
 async function getProducts(req, res, next) {
   try {
@@ -32,7 +33,7 @@ async function createNewProduct(req, res, next) {
 
 async function getUpdateProduct(req, res, next) {
   try {
-    const product = await Product.findById(req.params.id); //req.params.id extrae el valor de :id que pusimos en la url
+    const product = await Product.findById(req.params.id);
     res.render('admin/products/update-product', { product: product });
   } catch (error) {
     next(error);
@@ -42,11 +43,10 @@ async function getUpdateProduct(req, res, next) {
 async function updateProduct(req, res, next) {
   const product = new Product({
     ...req.body,
-    _id: req.params.id, // we get our id from the url (params.id) not from the form (req.body)
+    _id: req.params.id,
   });
 
   if (req.file) {
-    //replace the old image with the new one
     product.replaceImage(req.file.filename);
   }
 
@@ -69,7 +69,35 @@ async function deleteProduct(req, res, next) {
     return next(error);
   }
 
-  res.json({ message: 'Deleted product!' }); //570 min 18:20
+  res.json({ message: 'Deleted product!' });
+}
+
+async function getOrders(req, res, next) {
+  try {
+    const orders = await Order.findAll();
+    res.render('admin/orders/admin-orders', {
+      orders: orders,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function updateOrder(req, res, next) {
+  const orderId = req.params.id;
+  const newStatus = req.body.newStatus;
+
+  try {
+    const order = await Order.findById(orderId);
+
+    order.status = newStatus;
+
+    await order.save();
+
+    res.json({ message: 'Order updated', newStatus: newStatus });
+  } catch (error) {
+    next(error);
+  }
 }
 
 module.exports = {
@@ -79,4 +107,6 @@ module.exports = {
   getUpdateProduct: getUpdateProduct,
   updateProduct: updateProduct,
   deleteProduct: deleteProduct,
+  getOrders: getOrders,
+  updateOrder: updateOrder,
 };
