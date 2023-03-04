@@ -14,6 +14,8 @@ const errorHandleMiddleware = require('./middlewares/error-handler');
 const checkAuthStatusMiddleware = require('./middlewares/check-auth');
 const routeProtectionMiddleware = require('./middlewares/protect-routes');
 const cartMiddleware = require('./middlewares/cart');
+const updateCartPricesMiddleware = require('./middlewares/update-cart-prices');
+const notFoundMiddleware = require('./middlewares/not-found');
 
 //ROUTES
 const authRoutes = require('./routes/auth.routes');
@@ -39,6 +41,7 @@ app.use(expressSession(sessionConfig));
 app.use(csrf());
 
 app.use(cartMiddleware);
+app.use(updateCartPricesMiddleware);
 
 app.use(addCsrfTokenMiddleware);
 app.use(checkAuthStatusMiddleware);
@@ -50,9 +53,11 @@ app.use(productRoutes);
 app.use('/cart', cartRoutes);
 
 //Protected routes
-app.use(routeProtectionMiddleware);
-app.use('/admin', adminRoutes);
-app.use('/orders', ordersRoutes);
+app.use('/admin', routeProtectionMiddleware, adminRoutes);
+app.use('/orders', routeProtectionMiddleware, ordersRoutes);
+
+//Not registered URLs
+app.use(notFoundMiddleware);
 
 app.use(errorHandleMiddleware); // error handling middleware
 
